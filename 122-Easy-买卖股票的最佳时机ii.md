@@ -28,14 +28,30 @@
 
 ```c++
 int maxProfit(vector<int>& prices) {
-    int min_price =  prices[0];
-    vector<int> dp(prices.size());
-    dp[0] = 0;
-    for (int i = 1; i < prices.size(); ++i)
+    vector<vector<int>> dp(prices.size(), vector<int>(2));
+    dp[0][0] = 0;
+    dp[0][1] = -prices[0];
+    for (short i = 1; i < prices.size(); ++i)
     {
-        min_price = min(min_price, prices[i]);
-        dp[i] = max(dp[i - 1], prices[i] - min_price);
+        dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+        dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
     }
-    return dp[prices.size() - 1];
+    return dp[prices.size() - 1][0];
+}
+```
+优化：  
+每一天的状态只与前一天的状态有关，而与更早的状态都无关，因此我们不必存储这些无关的状态，只需要将dp[i−1][0] 和 dp[i−1][1] 存放在两个变量中，通过它们计算出dp[i][0] 和 dp[i][1] 并存回对应的变量，以便于第i+1 天的状态转移即可。
+
+```c++
+int maxProfit(vector<int>& prices) {
+    int dp0 = 0;
+    int dp1 = -prices[0];
+    for (short i = 1; i < prices.size(); ++i)
+    {
+        int tmp = dp0;
+        dp0 = max(dp0, dp1 + prices[i]);
+        dp1 = max(dp1, tmp - prices[i]);
+    }
+    return dp0;
 }
 ```
