@@ -55,3 +55,29 @@ int maxProfit(vector<int>& prices) {
     return dp0;
 }
 ```
+
+## 方法二 贪心算法
+贪心算法：由于不限制交易次数，只要今天股价比昨天高，就交易。  
+下面对这个算法进行几点说明：  
+该算法仅可以用于计算，但 计算的过程并不是真正交易的过程，但可以用贪心算法计算题目要求的最大利润。下面说明等价性：以 [1, 2, 3, 4] 为例，这 4 天的股价依次上升，按照贪心算法，得到的最大利润是：
+```c++
+res =  (prices[3] - prices[2]) + (prices[2] - prices[1]) + (prices[1] - prices[0])
+=  prices[3] - prices[0]
+```
+按照贪心算法，在下标为 1、2、3 的这三天，我们做的操作应该是买进昨天的，卖出今天的，虽然这种操作题目并不允许，但是它等价于：在下标为 0 的那一天买入，在下标为 3 的那一天卖出。
+
+```c++
+int maxProfit(vector<int>& prices) {
+        int profit = 0;
+        int diff = 0;
+        for (short i = 1; i < prices.size(); ++i)
+        {
+            diff = prices[i] - prices[i - 1];
+            if (diff > 0)
+            {
+                profit += diff;
+            }
+        }
+        return profit;
+    }
+```
